@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThangMedia Home</title>
+    <style>
+        /* CSS Cổ điển cho Kindle PPW3 */
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            text-align: center;
+        }
+        h1 {
+            border-bottom: 3px solid black;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .menu-grid {
+            /* Dùng Table display thay vì Grid/Flexbox để tương thích tối đa */
+            display: table;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 10px;
+        }
+        .menu-row {
+            display: table-row;
+        }
+        .menu-item {
+            display: table-cell;
+            width: 50%;
+            border: 2px solid black;
+            padding: 20px;
+            vertical-align: middle;
+            cursor: pointer;
+            border-radius: 5px; /* Bo góc nhẹ */
+        }
+        /* Giả lập hiệu ứng hover cho màn hình cảm ứng */
+        .menu-item:active {
+            background-color: black;
+            color: white;
+        }
+        .menu-item a {
+            text-decoration: none;
+            color: inherit;
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>THANG MEDIA</h1>
+
+    <div class="menu-grid">
+        <div class="menu-row">
+            <div class="menu-item">
+                <a href="minesweeper.html">DÒ MÌN 💣</a>
+            </div>
+            <div class="menu-item">
+                <a href="#">SẮP CÓ...</a>
+            </div>
+        </div>
+        <div class="menu-row">
+            <div class="menu-item">
+                <a href="Sudoku.html">SUDOKU 🔢</a>
+            </div>
+            <div class="menu-item">
+                <a href="#">SẮP CÓ...</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Thiết kế riêng cho PPW3
+    </div>
+
+</body>
+</html>
