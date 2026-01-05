@@ -203,9 +203,9 @@
             grid = [];
             minesRemaining = MINES;
             
-            // Điều chỉnh kích thước ô theo độ khó
-            var cellSize = difficulty === 'easy' ? 70 : (difficulty === 'medium' ? 60 : 50);
-            var fontSize = difficulty === 'easy' ? 26 : (difficulty === 'medium' ? 22 : 20);
+            // Điều chỉnh kích thước ô theo độ khó - tối ưu cho màn hình 1430x1080
+            var cellSize = difficulty === 'easy' ? 95 : (difficulty === 'medium' ? 75 : 60);
+            var fontSize = difficulty === 'easy' ? 32 : (difficulty === 'medium' ? 28 : 24);
             
             // Tạo lưới dữ liệu
             for (var r = 0; r < ROWS; r++) {
