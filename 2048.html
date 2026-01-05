@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>2048 - ThangMedia</title>
+    <style>
+        /* Retro computer monitor background */
+        body {
+            font-family: Arial, sans-serif;
+            background: repeating-linear-gradient(
+                0deg,
+                #000 0px,
+                #000 1px,
+                #fff 1px,
+                #fff 2px
+            );
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        /* Window container */
+        .window {
+            background: white;
+            border: 4px solid black;
+            margin: 0 auto;
+            max-width: 600px;
+            box-shadow: 0 0 0 2px #000;
+        }
+        
+        /* Title bar with striped pattern */
+        .title-bar {
+            background: repeating-linear-gradient(
+                90deg,
+                #000 0px,
+                #000 2px,
+                #fff 2px,
+                #fff 4px
+            );
+            border-bottom: 2px solid black;
+            padding: 8px;
+            display: table;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .title-bar-left {
+            display: table-cell;
+            width: 40px;
+            vertical-align: middle;
+        }
+        
+        .title-bar-center {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .title-bar-right {
+            display: table-cell;
+            width: 80px;
+            text-align: right;
+            vertical-align: middle;
+        }
+        
+        .close-btn {
+            width: 30px;
+            height: 30px;
+            background: white;
+            border: 2px solid black;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-block;
+            line-height: 26px;
+        }
+        
+        .close-btn:active {
+            background: black;
+            color: white;
+        }
+        
+        .reset-btn {
+            background: white;
+            border: 2px solid black;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .reset-btn:active {
+            background: black;
+            color: white;
+        }
+        
+        /* Game info */
+        .game-info {
+            padding: 10px;
+            border-bottom: 2px solid black;
+            display: table;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .score-container {
+            display: table-cell;
+            width: 50%;
+            text-align: left;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .best-container {
+            display: table-cell;
+            width: 50%;
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        /* Game board */
+        .game-board {
+            padding: 15px;
+            background: white;
+        }
+        
+        #grid {
+            border-collapse: collapse;
+            margin: 0 auto;
+            border: 3px solid black;
+        }
+        
+        #grid td {
+            width: 80px;
+            height: 80px;
+            border: 2px solid black;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 32px;
+            font-weight: bold;
+            background: white;
+        }
+        
+        /* Number cells */
+        .cell-2 { background: #eee; }
+        .cell-4 { background: #ddd; }
+        .cell-8 { background: #ccc; }
+        .cell-16 { background: #bbb; }
+        .cell-32 { background: #aaa; }
+        .cell-64 { background: #999; }
+        .cell-128 { background: #888; }
+        .cell-256 { background: #777; }
+        .cell-512 { background: #666; color: white; }
+        .cell-1024 { background: #555; color: white; }
+        .cell-2048 { background: #000; color: white; }
+        
+        /* Direction controls */
+        .controls {
+            padding: 15px;
+            background: white;
+        }
+        
+        .control-row {
+            text-align: center;
+            margin: 5px 0;
+        }
+        
+        .arrow-btn {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 2px solid black;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-block;
+            margin: 3px;
+            line-height: 56px;
+        }
+        
+        .arrow-btn:active {
+            background: black;
+            color: white;
+        }
+        
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            border: 2px solid black;
+            padding: 10px;
+            background: white;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <div class="title-bar-left">
+                <div class="close-btn" onclick="window.location.href='index.html'">X</div>
+            </div>
+            <div class="title-bar-center">2048</div>
+            <div class="title-bar-right">
+                <button class="reset-btn" onclick="resetGame()">Reset</button>
+            </div>
+        </div>
+        
+        <!-- Game Info -->
+        <div class="game-info">
+            <div class="score-container">Score: <span id="score">0</span></div>
+            <div class="best-container">Best: <span id="best">0</span></div>
+        </div>
+        
+        <!-- Game Board -->
+        <div class="game-board">
+            <table id="grid"></table>
+        </div>
+        
+        <!-- Direction Controls -->
+        <div class="controls">
+            <div class="control-row">
+                <div class="arrow-btn" onclick="move('up')">↑</div>
+            </div>
+            <div class="control-row">
+                <div class="arrow-btn" onclick="move('left')">←</div>
+                <div class="arrow-btn" onclick="move('down')">↓</div>
+                <div class="arrow-btn" onclick="move('right')">→</div>
+            </div>
+        </div>
+    </div>
+    
+    <a href="index.html" class="back-link">BACK TO HOME</a>
+
+    <script>
+        var grid = [];
+        var score = 0;
+        var best = 0;
+        var SIZE = 4;
+        
+        // Load best score from localStorage
+        if (localStorage.getItem('2048best')) {
+            best = parseInt(localStorage.getItem('2048best'));
+            document.getElementById('best').innerText = best;
+        }
+        
+        function initGame() {
+            grid = [];
+            score = 0;
+            document.getElementById('score').innerText = score;
+            
+            // Create empty grid
+            for (var r = 0; r < SIZE; r++) {
+                grid[r] = [];
+                for (var c = 0; c < SIZE; c++) {
+                    grid[r][c] = 0;
+                }
+            }
+            
+            // Add two random tiles
+            addRandomTile();
+            addRandomTile();
+            
+            updateDisplay();
+        }
+        
+        function addRandomTile() {
+            var emptyCells = [];
+            for (var r = 0; r < SIZE; r++) {
+                for (var c = 0; c < SIZE; c++) {
+                    if (grid[r][c] === 0) {
+                        emptyCells.push({r: r, c: c});
+                    }
+                }
+            }
+            
+            if (emptyCells.length > 0) {
+                var randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                grid[randomCell.r][randomCell.c] = Math.random() < 0.9 ? 2 : 4;
+            }
+        }
+        
+        function updateDisplay() {
+            var table = document.getElementById('grid');
+            table.innerHTML = '';
+            
+            for (var r = 0; r < SIZE; r++) {
+                var tr = document.createElement('tr');
+                for (var c = 0; c < SIZE; c++) {
+                    var td = document.createElement('td');
+                    var val = grid[r][c];
+                    if (val > 0) {
+                        td.innerText = val;
+                        td.className = 'cell-' + val;
+                    }
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+            
+            document.getElementById('score').innerText = score;
+            if (score > best) {
+                best = score;
+                document.getElementById('best').innerText = best;
+                localStorage.setItem('2048best', best);
+            }
+        }
+        
+        function move(direction) {
+            var moved = false;
+            var newGrid = [];
+            
+            // Copy grid
+            for (var r = 0; r < SIZE; r++) {
+                newGrid[r] = [];
+                for (var c = 0; c < SIZE; c++) {
+                    newGrid[r][c] = grid[r][c];
+                }
+            }
+            
+            if (direction === 'left') {
+                moved = moveLeft(newGrid);
+            } else if (direction === 'right') {
+                moved = moveRight(newGrid);
+            } else if (direction === 'up') {
+                moved = moveUp(newGrid);
+            } else if (direction === 'down') {
+                moved = moveDown(newGrid);
+            }
+            
+            if (moved) {
+                grid = newGrid;
+                addRandomTile();
+                updateDisplay();
+                
+                // Check game over
+                if (isGameOver()) {
+                    setTimeout(function() {
+                        alert('GAME OVER!');
+                    }, 100);
+                }
+            }
+        }
+        
+        function moveLeft(newGrid) {
+            var moved = false;
+            for (var r = 0; r < SIZE; r++) {
+                var row = [];
+                for (var c = 0; c < SIZE; c++) {
+                    if (newGrid[r][c] !== 0) {
+                        row.push(newGrid[r][c]);
+                    }
+                }
+                
+                // Merge
+                for (var i = 0; i < row.length - 1; i++) {
+                    if (row[i] === row[i + 1]) {
+                        row[i] *= 2;
+                        score += row[i];
+                        row.splice(i + 1, 1);
+                    }
+                }
+                
+                // Fill with zeros
+                while (row.length < SIZE) {
+                    row.push(0);
+                }
+                
+                // Check if moved
+                for (var c = 0; c < SIZE; c++) {
+                    if (newGrid[r][c] !== row[c]) {
+                        moved = true;
+                    }
+                    newGrid[r][c] = row[c];
+                }
+            }
+            return moved;
+        }
+        
+        function moveRight(newGrid) {
+            var moved = false;
+            for (var r = 0; r < SIZE; r++) {
+                var row = [];
+                for (var c = SIZE - 1; c >= 0; c--) {
+                    if (newGrid[r][c] !== 0) {
+                        row.push(newGrid[r][c]);
+                    }
+                }
+                
+                // Merge
+                for (var i = 0; i < row.length - 1; i++) {
+                    if (row[i] === row[i + 1]) {
+                        row[i] *= 2;
+                        score += row[i];
+                        row.splice(i + 1, 1);
+                    }
+                }
+                
+                // Fill with zeros
+                while (row.length < SIZE) {
+                    row.push(0);
+                }
+                
+                // Reverse and check if moved
+                row.reverse();
+                for (var c = 0; c < SIZE; c++) {
+                    if (newGrid[r][c] !== row[c]) {
+                        moved = true;
+                    }
+                    newGrid[r][c] = row[c];
+                }
+            }
+            return moved;
+        }
+        
+        function moveUp(newGrid) {
+            var moved = false;
+            for (var c = 0; c < SIZE; c++) {
+                var col = [];
+                for (var r = 0; r < SIZE; r++) {
+                    if (newGrid[r][c] !== 0) {
+                        col.push(newGrid[r][c]);
+                    }
+                }
+                
+                // Merge
+                for (var i = 0; i < col.length - 1; i++) {
+                    if (col[i] === col[i + 1]) {
+                        col[i] *= 2;
+                        score += col[i];
+                        col.splice(i + 1, 1);
+                    }
+                }
+                
+                // Fill with zeros
+                while (col.length < SIZE) {
+                    col.push(0);
+                }
+                
+                // Check if moved
+                for (var r = 0; r < SIZE; r++) {
+                    if (newGrid[r][c] !== col[r]) {
+                        moved = true;
+                    }
+                    newGrid[r][c] = col[r];
+                }
+            }
+            return moved;
+        }
+        
+        function moveDown(newGrid) {
+            var moved = false;
+            for (var c = 0; c < SIZE; c++) {
+                var col = [];
+                for (var r = SIZE - 1; r >= 0; r--) {
+                    if (newGrid[r][c] !== 0) {
+                        col.push(newGrid[r][c]);
+                    }
+                }
+                
+                // Merge
+                for (var i = 0; i < col.length - 1; i++) {
+                    if (col[i] === col[i + 1]) {
+                        col[i] *= 2;
+                        score += col[i];
+                        col.splice(i + 1, 1);
+                    }
+                }
+                
+                // Fill with zeros
+                while (col.length < SIZE) {
+                    col.push(0);
+                }
+                
+                // Reverse and check if moved
+                col.reverse();
+                for (var r = 0; r < SIZE; r++) {
+                    if (newGrid[r][c] !== col[r]) {
+                        moved = true;
+                    }
+                    newGrid[r][c] = col[r];
+                }
+            }
+            return moved;
+        }
+        
+        function isGameOver() {
+            // Check for empty cells
+            for (var r = 0; r < SIZE; r++) {
+                for (var c = 0; c < SIZE; c++) {
+                    if (grid[r][c] === 0) {
+                        return false;
+                    }
+                }
+            }
+            
+            // Check for possible merges
+            for (var r = 0; r < SIZE; r++) {
+                for (var c = 0; c < SIZE; c++) {
+                    var val = grid[r][c];
+                    if ((r < SIZE - 1 && grid[r + 1][c] === val) ||
+                        (c < SIZE - 1 && grid[r][c + 1] === val)) {
+                        return false;
+                    }
+                }
+            }
+            
+            return true;
+        }
+        
+        function resetGame() {
+            initGame();
+        }
+        
+        // Initialize game
+        initGame();
+    </script>
+</body>
+</html>
+
