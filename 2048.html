@@ -5,133 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>2048 - ThangMedia</title>
     <style>
-        /* Retro computer monitor background */
         body {
-            font-family: Arial, sans-serif;
-            background: repeating-linear-gradient(
-                0deg,
-                #000 0px,
-                #000 1px,
-                #fff 1px,
-                #fff 2px
-            );
+            font-family: sans-serif;
+            text-align: center;
             margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        /* Window container */
-        .window {
+            padding: 5px;
             background: white;
-            border: 4px solid black;
-            margin: 0 auto;
-            max-width: 800px;
-            box-shadow: 0 0 0 2px #000;
+            color: black;
         }
         
-        /* Title bar with striped pattern */
-        .title-bar {
-            background: repeating-linear-gradient(
-                90deg,
-                #000 0px,
-                #000 2px,
-                #fff 2px,
-                #fff 4px
-            );
+        h2 {
+            margin: 5px 0;
             border-bottom: 2px solid black;
-            padding: 8px;
-            display: table;
-            width: 100%;
-            box-sizing: border-box;
         }
         
-        .title-bar-left {
-            display: table-cell;
-            width: 40px;
-            vertical-align: middle;
+        .controls {
+            margin-bottom: 10px;
         }
         
-        .title-bar-center {
-            display: table-cell;
-            text-align: center;
-            vertical-align: middle;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-        }
-        
-        .title-bar-right {
-            display: table-cell;
-            width: 80px;
-            text-align: right;
-            vertical-align: middle;
-        }
-        
-        .close-btn {
-            width: 30px;
-            height: 30px;
+        button {
             background: white;
             border: 2px solid black;
-            font-size: 18px;
+            color: black;
+            padding: 8px 15px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            display: inline-block;
-            line-height: 26px;
+            margin: 0 5px;
+            border-radius: 4px;
         }
         
-        .close-btn:active {
+        button:active {
             background: black;
             color: white;
         }
-        
-        .reset-btn {
-            background: white;
-            border: 2px solid black;
-            padding: 5px 10px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .reset-btn:active {
-            background: black;
-            color: white;
-        }
-        
-        /* Game info */
-        .game-info {
-            padding: 10px;
-            border-bottom: 2px solid black;
-            display: table;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        
-        .score-container {
-            display: table-cell;
-            width: 50%;
-            text-align: left;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        
-        .best-container {
-            display: table-cell;
-            width: 50%;
-            text-align: right;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        
-        /* Game board */
-        .game-board {
-            padding: 15px;
-            background: white;
-        }
-        
+
         #grid {
             border-collapse: collapse;
-            margin: 0 auto;
+            margin: 10px auto;
             border: 3px solid black;
         }
         
@@ -162,7 +73,6 @@
         /* Direction controls */
         .controls {
             padding: 15px;
-            background: white;
         }
         
         .control-row {
@@ -194,48 +104,30 @@
             text-decoration: none;
             font-size: 18px;
             font-weight: bold;
-            border: 2px solid black;
+            border: 1px solid black;
             padding: 10px;
-            background: white;
-            color: black;
         }
     </style>
 </head>
 <body>
 
-    <div class="window">
-        <!-- Title Bar -->
-        <div class="title-bar">
-            <div class="title-bar-left">
-                <div class="close-btn" onclick="window.location.href='index.html'">X</div>
-            </div>
-            <div class="title-bar-center">2048</div>
-            <div class="title-bar-right">
-                <button class="reset-btn" onclick="resetGame()">Reset</button>
-            </div>
+    <h2 id="status">2048</h2>
+    <div class="controls">
+        <span>Score: <span id="score">0</span></span> | 
+        <span>Best: <span id="best">0</span></span>
+        <button onclick="resetGame()">RESET</button>
+    </div>
+
+    <table id="grid"></table>
+
+    <div class="controls">
+        <div class="control-row">
+            <div class="arrow-btn" onclick="move('up')">↑</div>
         </div>
-        
-        <!-- Game Info -->
-        <div class="game-info">
-            <div class="score-container">Score: <span id="score">0</span></div>
-            <div class="best-container">Best: <span id="best">0</span></div>
-        </div>
-        
-        <!-- Game Board -->
-        <div class="game-board">
-            <table id="grid"></table>
-        </div>
-        
-        <!-- Direction Controls -->
-        <div class="controls">
-            <div class="control-row">
-                <div class="arrow-btn" onclick="move('up')">↑</div>
-            </div>
-            <div class="control-row">
-                <div class="arrow-btn" onclick="move('left')">←</div>
-                <div class="arrow-btn" onclick="move('down')">↓</div>
-                <div class="arrow-btn" onclick="move('right')">→</div>
-            </div>
+        <div class="control-row">
+            <div class="arrow-btn" onclick="move('left')">←</div>
+            <div class="arrow-btn" onclick="move('down')">↓</div>
+            <div class="arrow-btn" onclick="move('right')">→</div>
         </div>
     </div>
     
@@ -526,4 +418,3 @@
     </script>
 </body>
 </html>
-

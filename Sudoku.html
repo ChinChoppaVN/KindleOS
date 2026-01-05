@@ -5,114 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Sudoku - ThangMedia</title>
     <style>
-        /* Retro computer monitor background */
         body {
-            font-family: Arial, sans-serif;
-            background: repeating-linear-gradient(
-                0deg,
-                #000 0px,
-                #000 1px,
-                #fff 1px,
-                #fff 2px
-            );
+            font-family: sans-serif;
+            text-align: center;
             margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        /* Window container */
-        .window {
+            padding: 5px;
             background: white;
-            border: 4px solid black;
-            margin: 0 auto;
-            max-width: 1100px;
-            box-shadow: 0 0 0 2px #000;
+            color: black;
         }
         
-        /* Title bar with striped pattern */
-        .title-bar {
-            background: repeating-linear-gradient(
-                90deg,
-                #000 0px,
-                #000 2px,
-                #fff 2px,
-                #fff 4px
-            );
+        h2 {
+            font-size: 28px;
+            margin: 10px 0;
             border-bottom: 2px solid black;
-            padding: 8px;
-            display: table;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        
-        .title-bar-left {
-            display: table-cell;
-            width: 40px;
-            vertical-align: middle;
-        }
-        
-        .title-bar-center {
-            display: table-cell;
-            text-align: center;
-            vertical-align: middle;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-        }
-        
-        .title-bar-right {
-            display: table-cell;
-            width: 200px;
-            text-align: right;
-            vertical-align: middle;
-        }
-        
-        .close-btn {
-            width: 30px;
-            height: 30px;
-            background: white;
-            border: 2px solid black;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-block;
-            line-height: 26px;
-        }
-        
-        .close-btn:active {
-            background: black;
-            color: white;
-        }
-        
-        .title-btn {
-            background: white;
-            border: 2px solid black;
-            padding: 5px 10px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-left: 5px;
-        }
-        
-        .title-btn:active {
-            background: black;
-            color: white;
-        }
-        
-        /* Game board area */
-        .game-area {
-            padding: 15px;
-            background: white;
         }
         
         /* Bàn cờ */
-        #grid {
+        table {
             border-collapse: collapse;
             margin: 10px auto;
             border: 2px solid black;
         }
         
-        #grid td {
+        td {
             width: 85px;
             height: 85px;
             border: 1px solid #999;
@@ -120,27 +35,26 @@
             font-size: 36px;
             font-weight: bold;
             cursor: pointer;
-            background: white;
         }
         
         /* Đường kẻ đậm chia khối 3x3 */
-        #grid td:nth-child(3n) {
+        td:nth-child(3n) {
             border-right: 2px solid black;
         }
         
-        #grid tr:nth-child(3n) td {
+        tr:nth-child(3n) td {
             border-bottom: 2px solid black;
         }
         
         /* Cạnh ngoài cùng */
-        #grid td:last-child {
+        td:last-child {
             border-right: 1px solid #999;
         }
         
-        #grid tr:last-child td {
+        tr:last-child td {
             border-bottom: 1px solid #999;
         }
-        
+
         .fixed {
             font-weight: bold;
             color: black;
@@ -151,12 +65,20 @@
             background: black;
             color: white;
         }
-        
-        /* Bàn phím số ảo */
-        .numpad {
-            padding: 15px;
+
+        /* Bàn phím số ảo (Popup) */
+        #numpad {
+            display: none;
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            margin-left: -130px;
             background: white;
-            border-top: 2px solid black;
+            border: 3px solid black;
+            padding: 15px;
+            z-index: 100;
+            width: 260px;
+            text-align: center;
         }
         
         .pad-row {
@@ -167,7 +89,7 @@
         .num-btn {
             width: 60px;
             height: 60px;
-            border: 2px solid black;
+            border: 1px solid black;
             margin: 3px;
             font-size: 28px;
             font-weight: bold;
@@ -175,7 +97,6 @@
             line-height: 60px;
             cursor: pointer;
             display: inline-block;
-            background: white;
         }
         
         .num-btn:active {
@@ -183,59 +104,68 @@
             color: white;
         }
         
+        .close-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            background: black;
+            color: white;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .menu-btn {
+            padding: 12px 20px;
+            border: 2px solid black;
+            background: white;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
         .back-link {
             display: block;
             margin-top: 20px;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
-            border: 2px solid black;
-            padding: 10px;
-            background: white;
-            color: black;
+            border: 1px solid black;
+            padding: 12px;
         }
     </style>
 </head>
 <body>
 
-    <div class="window">
-        <!-- Title Bar -->
-        <div class="title-bar">
-            <div class="title-bar-left">
-                <div class="close-btn" onclick="window.location.href='index.html'">X</div>
-            </div>
-            <div class="title-bar-center">Sudoku</div>
-            <div class="title-bar-right">
-                <button class="title-btn" onclick="checkGame()">Check</button>
-                <button class="title-btn" onclick="solveGame()">Solve</button>
-                <button class="title-btn" onclick="newGame()">New</button>
-            </div>
+    <h2>SUDOKU</h2>
+    <button class="menu-btn" onclick="newGame()">NEW GAME</button>
+    <button class="menu-btn" onclick="checkGame()">CHECK</button>
+
+    <table id="grid"></table>
+
+    <div id="numpad">
+        <div class="pad-row">
+            <div class="num-btn" onclick="setNum(1)">1</div>
+            <div class="num-btn" onclick="setNum(2)">2</div>
+            <div class="num-btn" onclick="setNum(3)">3</div>
         </div>
-        
-        <!-- Game Board -->
-        <div class="game-area">
-            <table id="grid"></table>
+        <div class="pad-row">
+            <div class="num-btn" onclick="setNum(4)">4</div>
+            <div class="num-btn" onclick="setNum(5)">5</div>
+            <div class="num-btn" onclick="setNum(6)">6</div>
         </div>
-        
-        <!-- Number Pad -->
-        <div class="numpad">
-            <div class="pad-row">
-                <div class="num-btn" onclick="setNum(1)">1</div>
-                <div class="num-btn" onclick="setNum(2)">2</div>
-                <div class="num-btn" onclick="setNum(3)">3</div>
-                <div class="num-btn" onclick="setNum(4)">4</div>
-                <div class="num-btn" onclick="setNum(5)">5</div>
-            </div>
-            <div class="pad-row">
-                <div class="num-btn" onclick="setNum(6)">6</div>
-                <div class="num-btn" onclick="setNum(7)">7</div>
-                <div class="num-btn" onclick="setNum(8)">8</div>
-                <div class="num-btn" onclick="setNum(9)">9</div>
-                <div class="num-btn" onclick="setNum('')">X</div>
-            </div>
+        <div class="pad-row">
+            <div class="num-btn" onclick="setNum(7)">7</div>
+            <div class="num-btn" onclick="setNum(8)">8</div>
+            <div class="num-btn" onclick="setNum(9)">9</div>
         </div>
+        <div class="pad-row">
+            <div class="num-btn" onclick="setNum('')">CLEAR</div>
+        </div>
+        <button class="close-btn" onclick="closePad()">CLOSE</button>
     </div>
-    
+
     <a href="index.html" class="back-link">BACK TO HOME</a>
 
     <script>
@@ -274,35 +204,34 @@
                     } else {
                         // Ô trống cần điền
                         td.onclick = (function(elem) {
-                            return function() { selectCell(elem); };
+                            return function() { openPad(elem); };
                         })(td);
                     }
                     tr.appendChild(td);
                 }
                 table.appendChild(tr);
             }
+        }
+
+        function openPad(elem) {
+            // Xóa highlight cũ
+            if (selectedCell) selectedCell.style.backgroundColor = "";
             
-            // Xóa selection
+            selectedCell = elem;
+            selectedCell.classList.add("selected"); // Highlight ô đang chọn
+            document.getElementById("numpad").style.display = "block";
+        }
+
+        function closePad() {
+            if (selectedCell) selectedCell.classList.remove("selected");
+            document.getElementById("numpad").style.display = "none";
             selectedCell = null;
         }
 
-        function selectCell(elem) {
-            // Xóa highlight cũ
-            if (selectedCell) {
-                selectedCell.classList.remove("selected");
-            }
-            
-            selectedCell = elem;
-            if (!selectedCell.classList.contains("fixed")) {
-                selectedCell.classList.add("selected");
-            }
-        }
-
         function setNum(num) {
-            if (selectedCell && !selectedCell.classList.contains("fixed")) {
+            if (selectedCell) {
                 selectedCell.innerText = num;
-                selectedCell.classList.remove("selected");
-                selectedCell = null;
+                closePad();
             }
         }
         
@@ -375,10 +304,6 @@
                 if (errors.length > 3) errorMsg += "...";
                 alert(errorMsg);
             }
-        }
-        
-        function solveGame() {
-            alert("Solve feature coming soon!");
         }
 
         newGame();
