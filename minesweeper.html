@@ -7,12 +7,12 @@
     <style>
         /* CSS cho E-ink */
         body { font-family: sans-serif; text-align: center; margin: 0; padding: 5px; background: white; color: black; }
-        h2 { margin: 5px 0; border-bottom: 2px solid black; }
+        h2 { margin: 10px 0; border-bottom: 2px solid black; font-size: 24px; }
         
-        .controls { margin-bottom: 10px; }
+        .controls { margin-bottom: 15px; }
         button {
             background: white; border: 2px solid black; color: black;
-            padding: 8px 15px; font-size: 16px; font-weight: bold;
+            padding: 12px 20px; font-size: 20px; font-weight: bold;
             cursor: pointer; margin: 0 5px; border-radius: 4px;
         }
         button:active { background: black; color: white; }
@@ -30,13 +30,13 @@
             display: table-row; 
         }
         .cell {
-            width: 38px; height: 38px; /* Ô to dễ bấm */
+            width: 140px; height: 140px; /* Ô lớn cho màn hình PPW3 1430x1080 */
             background: white;
             border: 1px solid #999;
             display: table-cell;
             text-align: center;
             vertical-align: middle;
-            font-size: 20px; font-weight: bold;
+            font-size: 48px; font-weight: bold; /* Font lớn hơn cho dễ nhìn */
             cursor: pointer;
             user-select: none; /* Chống bôi đen */
         }
@@ -49,7 +49,7 @@
         .c1 { color: black; } .c2 { color: black; } .c3 { color: black; } 
         /* Trên E-ink thì cứ đen hết cho rõ */
 
-        .back-link { display: block; margin-top: 20px; text-decoration: none; font-size: 18px; font-weight: bold; border: 1px solid black; padding: 10px; }
+        .back-link { display: block; margin-top: 20px; text-decoration: none; font-size: 20px; font-weight: bold; border: 1px solid black; padding: 12px; }
     </style>
 </head>
 <body>

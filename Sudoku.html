@@ -6,13 +6,14 @@
     <title>Sudoku - ThangMedia</title>
     <style>
         body { font-family: sans-serif; text-align: center; margin: 0; padding: 5px; background: white; color: black; }
+        h2 { font-size: 28px; margin: 10px 0; border-bottom: 2px solid black; }
         
         /* Bàn cờ */
         table { border-collapse: collapse; margin: 10px auto; border: 2px solid black; }
         td { 
-            width: 32px; height: 32px; 
+            width: 110px; height: 110px; /* Ô lớn cho màn hình PPW3 1430x1080 */
             border: 1px solid #999; 
-            text-align: center; font-size: 18px; 
+            text-align: center; font-size: 42px; font-weight: bold; /* Font lớn hơn cho dễ nhìn */
             cursor: pointer;
         }
         /* Đường kẻ đậm chia khối 3x3 */
@@ -31,10 +32,10 @@
             position: fixed; /* Dùng fixed cho tương thích tốt hơn với PPW3 */
             top: 30%;
             left: 50%;
-            margin-left: -100px; /* Thay transform bằng margin cho tương thích */
+            margin-left: -130px; /* Điều chỉnh theo kích thước mới */
             background: white; border: 3px solid black; 
-            padding: 10px; z-index: 100;
-            width: 200px;
+            padding: 15px; z-index: 100;
+            width: 260px; /* Rộng hơn cho các nút lớn */
             text-align: center;
         }
         .pad-row { 
@@ -42,20 +43,20 @@
             margin: 5px 0;
         }
         .num-btn {
-            width: 40px; height: 40px; 
+            width: 60px; height: 60px; /* Nút lớn hơn cho dễ bấm */
             border: 1px solid black; 
-            margin: 2px;
-            font-size: 20px; font-weight: bold;
+            margin: 3px;
+            font-size: 28px; font-weight: bold;
             text-align: center;
-            line-height: 40px; /* Căn giữa theo chiều dọc */
+            line-height: 60px; /* Căn giữa theo chiều dọc */
             cursor: pointer;
             display: inline-block;
         }
         .num-btn:active { background: black; color: white; }
-        .close-btn { width: 100%; margin-top: 5px; padding: 5px; background: black; color: white; border: none; font-size: 16px; }
+        .close-btn { width: 100%; margin-top: 10px; padding: 10px; background: black; color: white; border: none; font-size: 20px; font-weight: bold; }
 
-        .menu-btn { padding: 10px; border: 2px solid black; background: white; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px; }
-        .back-link { display: block; margin-top: 20px; text-decoration: none; font-size: 18px; font-weight: bold; border: 1px solid black; padding: 10px; }
+        .menu-btn { padding: 12px 20px; border: 2px solid black; background: white; font-weight: bold; font-size: 20px; cursor: pointer; margin-bottom: 10px; }
+        .back-link { display: block; margin-top: 20px; text-decoration: none; font-size: 20px; font-weight: bold; border: 1px solid black; padding: 12px; }
     </style>
 </head>
 <body>
