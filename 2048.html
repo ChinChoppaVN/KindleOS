@@ -39,6 +39,32 @@
             background: black;
             color: white;
         }
+        
+        .difficulty-selector {
+            margin-bottom: 10px;
+        }
+        
+        .difficulty-selector button {
+            background: white;
+            border: 2px solid black;
+            color: black;
+            padding: 8px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 3px;
+            border-radius: 4px;
+        }
+        
+        .difficulty-selector button:active {
+            background: black;
+            color: white;
+        }
+        
+        .difficulty-selector button.active-difficulty {
+            background: black;
+            color: white;
+        }
 
         #grid {
             border-collapse: collapse;
@@ -112,6 +138,11 @@
 <body>
 
     <h2 id="status">2048</h2>
+    <div class="difficulty-selector">
+        <button onclick="setDifficulty('easy')" id="easyBtn" class="active-difficulty">EASY</button>
+        <button onclick="setDifficulty('medium')" id="mediumBtn">MEDIUM</button>
+        <button onclick="setDifficulty('hard')" id="hardBtn">HARD</button>
+    </div>
     <div class="controls">
         <span>Score: <span id="score">0</span></span> | 
         <span>Best: <span id="best">0</span></span>
@@ -137,13 +168,22 @@
         var grid = [];
         var score = 0;
         var best = 0;
+        var difficulty = 'easy';
         var SIZE = 4;
         
         // Load best score from localStorage
-        if (localStorage.getItem('2048best')) {
-            best = parseInt(localStorage.getItem('2048best'));
-            document.getElementById('best').innerText = best;
+        function loadBestScore() {
+            var key = '2048best_' + difficulty;
+            if (localStorage.getItem(key)) {
+                best = parseInt(localStorage.getItem(key));
+                document.getElementById('best').innerText = best;
+            } else {
+                best = 0;
+                document.getElementById('best').innerText = best;
+            }
         }
+        
+        loadBestScore();
         
         function initGame() {
             grid = [];
@@ -185,11 +225,18 @@
             var table = document.getElementById('grid');
             table.innerHTML = '';
             
+            // Điều chỉnh kích thước ô theo độ khó
+            var cellSize = difficulty === 'easy' ? 180 : (difficulty === 'medium' ? 120 : 90);
+            var fontSize = difficulty === 'easy' ? 64 : (difficulty === 'medium' ? 42 : 32);
+            
             for (var r = 0; r < SIZE; r++) {
                 var tr = document.createElement('tr');
                 for (var c = 0; c < SIZE; c++) {
                     var td = document.createElement('td');
                     var val = grid[r][c];
+                    td.style.width = cellSize + 'px';
+                    td.style.height = cellSize + 'px';
+                    td.style.fontSize = fontSize + 'px';
                     if (val > 0) {
                         td.innerText = val;
                         td.className = 'cell-' + val;
@@ -203,7 +250,7 @@
             if (score > best) {
                 best = score;
                 document.getElementById('best').innerText = best;
-                localStorage.setItem('2048best', best);
+                localStorage.setItem('2048best_' + difficulty, best);
             }
         }
         
@@ -407,6 +454,32 @@
             }
             
             return true;
+        }
+        
+        function setDifficulty(level) {
+            difficulty = level;
+            
+            // Cập nhật UI
+            document.getElementById('easyBtn').className = '';
+            document.getElementById('mediumBtn').className = '';
+            document.getElementById('hardBtn').className = '';
+            
+            if (level === 'easy') {
+                SIZE = 4;
+                document.getElementById('easyBtn').className = 'active-difficulty';
+            } else if (level === 'medium') {
+                SIZE = 6;
+                document.getElementById('mediumBtn').className = 'active-difficulty';
+            } else if (level === 'hard') {
+                SIZE = 8;
+                document.getElementById('hardBtn').className = 'active-difficulty';
+            }
+            
+            // Load best score cho độ khó mới
+            loadBestScore();
+            
+            // Tạo lại game với cấu hình mới
+            initGame();
         }
         
         function resetGame() {

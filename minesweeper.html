@@ -72,6 +72,15 @@
             background: black;
             color: white;
         }
+        
+        .mode-controls {
+            margin-top: 15px;
+        }
+        
+        .mode-controls button {
+            padding: 12px 30px;
+            font-size: 20px;
+        }
 
         #board {
             display: inline-block;
@@ -146,11 +155,15 @@
     </div>
     
     <div class="controls">
-        <button onclick="toggleMode()" id="modeBtn" class="active-mode">REVEAL</button>
         <button onclick="initGame()">NEW GAME</button>
     </div>
 
     <div id="board"></div>
+    
+    <div class="mode-controls">
+        <button onclick="setMode('dig')" id="digBtn" class="active-mode">DIG</button>
+        <button onclick="setMode('flag')" id="flagBtn">FLAG</button>
+    </div>
 
     <a href="index.html" class="back-link">BACK TO HOME</a>
 
@@ -202,6 +215,8 @@
             gameOver = false;
             grid = [];
             minesRemaining = MINES;
+            isFlagMode = false;
+            setMode('dig'); // Reset về chế độ DIG
             
             // Điều chỉnh kích thước ô theo độ khó - tối ưu cho màn hình 1430x1080
             var cellSize = difficulty === 'easy' ? 95 : (difficulty === 'medium' ? 75 : 60);
@@ -273,15 +288,15 @@
             return count;
         }
 
-        function toggleMode() {
-            isFlagMode = !isFlagMode;
-            var btn = document.getElementById("modeBtn");
-            if (isFlagMode) {
-                btn.innerText = "FLAG";
-                btn.className = ""; // Bỏ style đen
-            } else {
-                btn.innerText = "REVEAL";
-                btn.className = "active-mode"; // Thêm style đen
+        function setMode(mode) {
+            if (mode === 'dig') {
+                isFlagMode = false;
+                document.getElementById('digBtn').className = 'active-mode';
+                document.getElementById('flagBtn').className = '';
+            } else if (mode === 'flag') {
+                isFlagMode = true;
+                document.getElementById('digBtn').className = '';
+                document.getElementById('flagBtn').className = 'active-mode';
             }
         }
 
