@@ -17,28 +17,6 @@
         h2 {
             margin: 5px 0;
             border-bottom: 2px solid black;
-            position: relative;
-            padding-right: 40px;
-        }
-        
-        .close-btn {
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 35px;
-            height: 35px;
-            background: white;
-            border: 2px solid black;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            line-height: 31px;
-            text-align: center;
-        }
-        
-        .close-btn:active {
-            background: black;
-            color: white;
         }
         
         .controls {
@@ -146,11 +124,21 @@
             color: white;
         }
         
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            border: 1px solid black;
+            padding: 10px;
+        }
+        
     </style>
 </head>
 <body>
 
-    <h2 id="status">2048<span class="close-btn" onclick="window.location.href='index.html'">X</span></h2>
+    <h2 id="status">2048</h2>
     <div class="difficulty-selector">
         <button onclick="setDifficulty('easy')" id="easyBtn" class="active-difficulty">EASY</button>
         <button onclick="setDifficulty('medium')" id="mediumBtn">MEDIUM</button>
@@ -175,6 +163,7 @@
         </div>
     </div>
     
+    <a href="index.html" class="back-link">BACK TO HOME</a>
 
     <script>
         var grid = [];
