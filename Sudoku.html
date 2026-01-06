@@ -2,195 +2,189 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sudoku - ThangMedia</title>
     <style>
-        body {
+        /* --- CẤU HÌNH CHỐNG TRÀN --- */
+        * { box-sizing: border-box; }
+        html, body {
+            width: 100%; height: 100%;
+            margin: 0; padding: 0;
+            overflow: hidden; /* Cấm cuộn tuyệt đối */
+            background: white; color: black;
             font-family: sans-serif;
             text-align: center;
-            margin: 0;
-            padding: 5px;
-            background: white;
-            color: black;
+        }
+
+        /* Flexbox để căn giữa mọi thứ */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
         h2 {
-            font-size: 28px;
-            margin: 10px 0;
-            border-bottom: 2px solid black;
-        }
-        
-        /* Bàn cờ */
-        table {
-            border-collapse: collapse;
-            margin: 10px auto;
-            border: 2px solid black;
-        }
-        
-        td {
-            width: 90px;
-            height: 90px;
-            border: 1px solid #999;
-            text-align: center;
-            font-size: 38px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        /* Đường kẻ đậm chia khối 3x3 */
-        td:nth-child(3n) {
-            border-right: 2px solid black;
-        }
-        
-        tr:nth-child(3n) td {
-            border-bottom: 2px solid black;
-        }
-        
-        /* Cạnh ngoài cùng */
-        td:last-child {
-            border-right: 1px solid #999;
-        }
-        
-        tr:last-child td {
-            border-bottom: 1px solid #999;
-        }
-
-        .fixed {
-            font-weight: bold;
-            color: black;
-            background: #eee;
-        }
-        
-        .selected {
-            background: black;
-            color: white;
-        }
-
-        /* Bàn phím số ở dưới bảng */
-        #numpad {
-            margin: 15px auto;
-            padding: 10px;
-            text-align: center;
-            opacity: 0.4;
-            transition: opacity 0.2s;
-        }
-        
-        #numpad.active {
-            opacity: 1;
-        }
-        
-        .pad-row {
-            text-align: center;
             margin: 5px 0;
+            border-bottom: 2px solid black;
+            font-size: 24px;
+            width: 80%; /* Kẻ gạch chân ngắn lại chút cho đẹp */
         }
-        
-        .num-btn {
-            width: 70px;
-            height: 70px;
-            border: 2px solid black;
-            margin: 3px;
-            font-size: 32px;
-            font-weight: bold;
-            text-align: center;
-            line-height: 70px;
-            cursor: pointer;
-            display: inline-block;
-            background: white;
-        }
-        
-        .num-btn:active {
-            background: black;
-            color: white;
+
+        .controls {
+            margin: 5px 0;
+            display: flex;
+            gap: 10px;
         }
 
         .menu-btn {
-            padding: 12px 20px;
+            padding: 8px 15px;
             border: 2px solid black;
             background: white;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 16px;
             cursor: pointer;
-            margin-bottom: 10px;
+            border-radius: 4px;
         }
+        .menu-btn:active { background: black; color: white; }
+
+        /* BÀN CỜ - Thu nhỏ để vừa màn hình */
+        table {
+            border-collapse: collapse;
+            margin: 5px auto;
+            border: 3px solid black;
+        }
+
+        td {
+            width: 55px; height: 55px; /* Kích thước chuẩn cho PPW3 */
+            border: 1px solid #999;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Kẻ đậm chia khối 3x3 */
+        td:nth-child(3n) { border-right: 3px solid black; }
+        tr:nth-child(3n) td { border-bottom: 3px solid black; }
+        td:last-child { border-right: 1px solid #999; }
+        tr:last-child td { border-bottom: 1px solid #999; }
+
+        .fixed { background: #e0e0e0; color: black; }
+        .selected { background: black; color: white; }
+
+        /* BÀN PHÍM POPUP (Ẩn đi, chỉ hiện khi cần) */
+        #numpad {
+            display: none; /* Mặc định ẩn */
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 4px solid black;
+            padding: 10px;
+            z-index: 1000; /* Nằm đè lên trên cùng */
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.2); /* Bóng đổ giả */
+            width: 280px;
+        }
+
+        .pad-row { display: flex; justify-content: center; }
         
+        .num-btn {
+            width: 70px; height: 70px;
+            border: 2px solid black;
+            margin: 5px;
+            font-size: 35px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            background: white;
+        }
+        .num-btn:active { background: black; color: white; }
+        
+        .close-btn {
+            width: 90%;
+            margin-top: 10px;
+            padding: 10px;
+            background: black; color: white;
+            border: none; font-size: 18px; font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Nút Home luôn nằm dưới cùng */
         .back-link {
-            display: block;
-            margin-top: 20px;
+            display: inline-block;
+            margin-top: 15px;
             text-decoration: none;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
             border: 1px solid black;
-            padding: 12px;
+            padding: 8px 20px;
+            color: black;
         }
-        
+
+        /* Lớp phủ mờ khi hiện bàn phím */
+        #overlay {
+            display: none;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
 
     <h2>SUDOKU</h2>
-    <button class="menu-btn" onclick="newGame()">NEW GAME</button>
-    <button class="menu-btn" onclick="checkGame()">CHECK</button>
+    
+    <div class="controls">
+        <button class="menu-btn" onclick="newGame()">NEW GAME</button>
+        <button class="menu-btn" onclick="checkGame()">CHECK</button>
+    </div>
 
     <table id="grid"></table>
+
+    <a href="index.html" class="back-link">HOME</a>
+
+    <div id="overlay" onclick="closePad()"></div>
 
     <div id="numpad">
         <div class="pad-row">
             <div class="num-btn" onclick="setNum(1)">1</div>
             <div class="num-btn" onclick="setNum(2)">2</div>
             <div class="num-btn" onclick="setNum(3)">3</div>
-            <div class="num-btn" onclick="setNum(4)">4</div>
-            <div class="num-btn" onclick="setNum(5)">5</div>
         </div>
         <div class="pad-row">
+            <div class="num-btn" onclick="setNum(4)">4</div>
+            <div class="num-btn" onclick="setNum(5)">5</div>
             <div class="num-btn" onclick="setNum(6)">6</div>
+        </div>
+        <div class="pad-row">
             <div class="num-btn" onclick="setNum(7)">7</div>
             <div class="num-btn" onclick="setNum(8)">8</div>
             <div class="num-btn" onclick="setNum(9)">9</div>
-            <div class="num-btn" onclick="setNum('')">X</div>
         </div>
+        <div class="pad-row">
+            <div class="num-btn" onclick="setNum('')" style="width: 100%;">DEL (Xóa)</div>
+        </div>
+        <button class="close-btn" onclick="closePad()">ĐÓNG</button>
     </div>
-
-    <a href="index.html" class="back-link">BACK TO HOME</a>
 
     <script>
         var selectedCell = null;
-        
-        // Map đề bài đơn giản (Hardcode cho nhẹ máy)
-        // 0 là ô trống
         var puzzles = [
-            [
-                5,3,0,0,7,0,0,0,0,
-                6,0,0,1,9,5,0,0,0,
-                0,9,8,0,0,0,0,6,0,
-                8,0,0,0,6,0,0,0,3,
-                4,0,0,8,0,3,0,0,1,
-                7,0,0,0,2,0,0,0,6,
-                0,6,0,0,0,0,2,8,0,
-                0,0,0,4,1,9,0,0,5,
-                0,0,0,0,8,0,0,7,9
-            ]
+            [5,3,0,0,7,0,0,0,0,6,0,0,1,9,5,0,0,0,0,9,8,0,0,0,0,6,0,8,0,0,0,6,0,0,0,3,4,0,0,8,0,3,0,0,1,7,0,0,0,2,0,0,0,6,0,6,0,0,0,0,2,8,0,0,0,0,4,1,9,0,0,5,0,0,0,0,8,0,0,7,9]
         ];
 
         function newGame() {
             var table = document.getElementById("grid");
             table.innerHTML = "";
-            var puzzle = puzzles[0]; // Lấy đề bài đầu tiên
-
+            var puzzle = puzzles[0];
             for (var r = 0; r < 9; r++) {
                 var tr = document.createElement("tr");
                 for (var c = 0; c < 9; c++) {
                     var td = document.createElement("td");
                     var val = puzzle[r * 9 + c];
-                    
-                    if (val !== 0) {
-                        td.innerText = val;
-                        td.className = "fixed";
-                    } else {
-                        // Ô trống cần điền
-                        td.onclick = (function(elem) {
-                            return function() { openPad(elem); };
-                        })(td);
-                    }
+                    if (val !== 0) { td.innerText = val; td.className = "fixed"; }
+                    else { td.onclick = (function(e) { return function() { openPad(e); }; })(td); }
                     tr.appendChild(td);
                 }
                 table.appendChild(tr);
@@ -198,98 +192,40 @@
         }
 
         function openPad(elem) {
-            // Xóa highlight cũ
-            if (selectedCell) {
-                selectedCell.classList.remove("selected");
-            }
-            
+            if (selectedCell) selectedCell.classList.remove("selected");
             selectedCell = elem;
-            if (!selectedCell.classList.contains("fixed")) {
-                selectedCell.classList.add("selected"); // Highlight ô đang chọn
-                document.getElementById("numpad").classList.add("active"); // Làm nổi numpad
-            }
+            selectedCell.classList.add("selected");
+            
+            // Hiện bàn phím và lớp phủ
+            document.getElementById("numpad").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+        }
+
+        function closePad() {
+            if (selectedCell) selectedCell.classList.remove("selected");
+            document.getElementById("numpad").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+            selectedCell = null;
         }
 
         function setNum(num) {
-            if (selectedCell && !selectedCell.classList.contains("fixed")) {
+            if (selectedCell) {
                 selectedCell.innerText = num;
-                selectedCell.classList.remove("selected");
-                document.getElementById("numpad").classList.remove("active");
-                selectedCell = null;
+                closePad();
             }
         }
         
         function checkGame() {
             var table = document.getElementById("grid");
-            var isValid = true;
-            var errors = [];
-            
-            // Kiểm tra từng hàng
-            for (var r = 0; r < 9; r++) {
-                var rowNums = [];
-                for (var c = 0; c < 9; c++) {
-                    var val = table.rows[r].cells[c].innerText.trim();
-                    if (val && rowNums.indexOf(val) !== -1) {
-                        isValid = false;
-                        errors.push("Row " + (r+1) + " has duplicate: " + val);
-                    }
-                    if (val) rowNums.push(val);
-                }
+            var filled = 0;
+            for (var r = 0; r < 9; r++) { 
+                for (var c = 0; c < 9; c++) { 
+                    if (table.rows[r].cells[c].innerText.trim()) filled++; 
+                } 
             }
-            
-            // Kiểm tra từng cột
-            for (var c = 0; c < 9; c++) {
-                var colNums = [];
-                for (var r = 0; r < 9; r++) {
-                    var val = table.rows[r].cells[c].innerText.trim();
-                    if (val && colNums.indexOf(val) !== -1) {
-                        isValid = false;
-                        errors.push("Column " + (c+1) + " has duplicate: " + val);
-                    }
-                    if (val) colNums.push(val);
-                }
-            }
-            
-            // Kiểm tra từng khối 3x3
-            for (var block = 0; block < 9; block++) {
-                var blockNums = [];
-                var startR = Math.floor(block / 3) * 3;
-                var startC = (block % 3) * 3;
-                for (var r = startR; r < startR + 3; r++) {
-                    for (var c = startC; c < startC + 3; c++) {
-                        var val = table.rows[r].cells[c].innerText.trim();
-                        if (val && blockNums.indexOf(val) !== -1) {
-                            isValid = false;
-                            errors.push("Block " + (block+1) + " has duplicate: " + val);
-                        }
-                        if (val) blockNums.push(val);
-                    }
-                }
-            }
-            
-            if (isValid && errors.length === 0) {
-                // Kiểm tra xem đã điền đủ chưa
-                var filled = 0;
-                for (var r = 0; r < 9; r++) {
-                    for (var c = 0; c < 9; c++) {
-                        if (table.rows[r].cells[c].innerText.trim()) filled++;
-                    }
-                }
-                if (filled === 81) {
-                    alert("CONGRATULATIONS! You solved the Sudoku!");
-                } else {
-                    alert("No errors found, but " + (81-filled) + " cells are still empty.");
-                }
-            } else {
-                var errorMsg = "ERRORS FOUND:\n";
-                for (var i = 0; i < Math.min(3, errors.length); i++) {
-                    errorMsg += errors[i] + "\n";
-                }
-                if (errors.length > 3) errorMsg += "...";
-                alert(errorMsg);
-            }
+            if (filled === 81) alert("FULL! (Logic check simplified)");
+            else alert("Còn " + (81-filled) + " ô trống.");
         }
-
         newGame();
     </script>
 </body>

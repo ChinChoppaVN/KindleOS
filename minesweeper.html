@@ -2,38 +2,45 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Minesweeper - ThangMedia</title>
     <style>
-        /* CSS cho E-ink */
-        body {
-            font-family: sans-serif;
-            text-align: center;
+        /* --- KHẮC PHỤC THANH TRƯỢT --- */
+        * {
+            box-sizing: border-box; /* Tính kích thước bao gồm cả viền */
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
             margin: 0;
-            padding: 5px;
+            padding: 0;
+            overflow: hidden; /* Cấm tuyệt đối thanh cuộn */
             background: white;
             color: black;
+            font-family: sans-serif;
+            text-align: center;
         }
         
+        /* Dùng Flexbox để căn giữa toàn màn hình */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Căn giữa dọc */
+            align-items: center; /* Căn giữa ngang */
+        }
+
         h2 {
-            margin: 10px 0;
+            margin: 5px 0;
             border-bottom: 2px solid black;
-            font-size: 24px;
+            font-size: 22px;
         }
         
-        .controls {
-            margin-bottom: 15px;
-        }
-        
-        .difficulty-selector {
-            margin-bottom: 10px;
-        }
-        
-        .difficulty-selector button {
+        /* Các nút bấm gọn hơn chút */
+        button {
             background: white;
             border: 2px solid black;
             color: black;
-            padding: 8px 15px;
+            padding: 5px 10px; /* Giảm padding */
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
@@ -41,45 +48,13 @@
             border-radius: 4px;
         }
         
-        .difficulty-selector button:active {
+        button:active, button.active-mode, button.active-difficulty {
             background: black;
             color: white;
         }
-        
-        .difficulty-selector button.active-difficulty {
-            background: black;
-            color: white;
-        }
-        
-        button {
-            background: white;
-            border: 2px solid black;
-            color: black;
-            padding: 10px 18px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 0 5px;
-            border-radius: 4px;
-        }
-        
-        button:active {
-            background: black;
-            color: white;
-        }
-        
-        button.active-mode {
-            background: black;
-            color: white;
-        }
-        
-        .mode-controls {
-            margin-top: 15px;
-        }
-        
-        .mode-controls button {
-            padding: 12px 30px;
-            font-size: 20px;
+
+        .controls, .difficulty-selector, .mode-controls {
+            margin: 5px 0;
         }
 
         #board {
@@ -90,59 +65,32 @@
             padding: 1px;
         }
         
-        .row {
-            display: block;
-            white-space: nowrap;
-        }
+        .row { display: flex; }
         
         .cell {
-            width: 50px;
-            height: 50px;
             background: white;
             border: 1px solid #999;
-            display: inline-block;
-            text-align: center;
-            vertical-align: middle;
-            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
             cursor: pointer;
             user-select: none;
-            line-height: 50px;
-            margin: 0;
-            padding: 0;
         }
         
-        .cell.revealed {
-            background: #ddd;
-            color: black;
-            border: 2px solid #666;
-        }
+        .cell.revealed { background: #ddd; border: 1px solid #666; }
+        .cell.bomb { background: black; color: white; }
         
-        .cell.bomb {
-            background: black;
-            color: white;
-        }
-        
-        .cell.flag {
-            color: black;
-        }
-        
-        /* Màu số */
-        .c1 { color: black; }
-        .c2 { color: black; }
-        .c3 { color: black; }
-        /* Trên E-ink thì cứ đen hết cho rõ */
-
         .back-link {
-            display: block;
-            margin-top: 20px;
+            display: inline-block;
+            margin-top: 10px;
             text-decoration: none;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
             border: 1px solid black;
-            padding: 12px;
+            padding: 8px 15px;
+            color: black;
         }
-
     </style>
 </head>
 <body>
@@ -151,7 +99,7 @@
     
     <div class="difficulty-selector">
         <button onclick="setDifficulty('easy')" id="easyBtn" class="active-difficulty">EASY</button>
-        <button onclick="setDifficulty('medium')" id="mediumBtn">MEDIUM</button>
+        <button onclick="setDifficulty('medium')" id="mediumBtn">MED</button>
         <button onclick="setDifficulty('hard')" id="hardBtn">HARD</button>
     </div>
     
@@ -162,50 +110,33 @@
     <div id="board"></div>
     
     <div class="mode-controls">
-        <button onclick="setMode('dig')" id="digBtn" class="active-mode">DIG</button>
-        <button onclick="setMode('flag')" id="flagBtn">FLAG</button>
+        <button onclick="setMode('dig')" id="digBtn" class="active-mode">DIG ⛏️</button>
+        <button onclick="setMode('flag')" id="flagBtn">FLAG 🚩</button>
     </div>
 
-    <a href="index.html" class="back-link">BACK TO HOME</a>
+    <a href="index.html" class="back-link">HOME</a>
 
     <script>
-        // Cấu hình độ khó
         var difficulty = 'easy';
-        var ROWS = 8;
-        var COLS = 8;
-        var MINES = 10;
-        
-        var grid = [];
-        var gameOver = false;
-        var isFlagMode = false; // False = Mở ô, True = Cắm cờ
-        var minesRemaining = MINES;
-        
+        var ROWS = 8; var COLS = 8; var MINES = 10;
+        var grid = []; var gameOver = false; var isFlagMode = false;
+
         function setDifficulty(level) {
             difficulty = level;
-            
-            // Cập nhật UI
             document.getElementById('easyBtn').className = '';
             document.getElementById('mediumBtn').className = '';
             document.getElementById('hardBtn').className = '';
             
             if (level === 'easy') {
-                ROWS = 8;
-                COLS = 8;
-                MINES = 10;
+                ROWS = 8; COLS = 8; MINES = 10;
                 document.getElementById('easyBtn').className = 'active-difficulty';
             } else if (level === 'medium') {
-                ROWS = 10;
-                COLS = 10;
-                MINES = 20;
+                ROWS = 10; COLS = 10; MINES = 20;
                 document.getElementById('mediumBtn').className = 'active-difficulty';
             } else if (level === 'hard') {
-                ROWS = 12;
-                COLS = 12;
-                MINES = 40;
+                ROWS = 12; COLS = 12; MINES = 40;
                 document.getElementById('hardBtn').className = 'active-difficulty';
             }
-            
-            // Tạo lại game với cấu hình mới
             initGame();
         }
 
@@ -215,39 +146,25 @@
             document.getElementById("status").innerText = "MINES: " + MINES;
             gameOver = false;
             grid = [];
-            minesRemaining = MINES;
             isFlagMode = false;
-            setMode('dig'); // Reset về chế độ DIG
+            setMode('dig');
             
-            // Điều chỉnh kích thước ô theo độ khó - tối ưu cho màn hình 1430x1080
-            var cellSize = difficulty === 'easy' ? 95 : (difficulty === 'medium' ? 75 : 60);
-            var fontSize = difficulty === 'easy' ? 32 : (difficulty === 'medium' ? 28 : 24);
+            // GIẢM KÍCH THƯỚC Ô XUỐNG CHÚT ĐỂ VỪA KHÍT
+            var cellSize = difficulty === 'easy' ? 80 : (difficulty === 'medium' ? 65 : 50);
+            var fontSize = difficulty === 'easy' ? 30 : (difficulty === 'medium' ? 24 : 18);
             
-            // Tạo lưới dữ liệu
             for (var r = 0; r < ROWS; r++) {
                 var row = [];
                 var rowDiv = document.createElement("div");
                 rowDiv.className = "row";
                 for (var c = 0; c < COLS; c++) {
-                    var cell = {
-                        r: r, c: c,
-                        isMine: false,
-                        isOpen: false,
-                        isFlag: false,
-                        count: 0,
-                        div: document.createElement("div")
-                    };
+                    var cell = { r: r, c: c, isMine: false, isOpen: false, isFlag: false, count: 0, div: document.createElement("div") };
                     cell.div.className = "cell";
                     cell.div.style.width = cellSize + "px";
                     cell.div.style.height = cellSize + "px";
                     cell.div.style.fontSize = fontSize + "px";
-                    cell.div.style.lineHeight = cellSize + "px";
                     
-                    // Xử lý sự kiện click (Closure để giữ biến r,c)
-                    cell.div.onclick = (function(cellData){
-                        return function() { handleClick(cellData); };
-                    })(cell);
-
+                    cell.div.onclick = (function(d){ return function() { handleClick(d); }; })(cell);
                     row.push(cell);
                     rowDiv.appendChild(cell.div);
                 }
@@ -255,23 +172,16 @@
                 boardDiv.appendChild(rowDiv);
             }
 
-            // Rải mìn ngẫu nhiên
             var minesPlaced = 0;
             while (minesPlaced < MINES) {
                 var rr = Math.floor(Math.random() * ROWS);
                 var cc = Math.floor(Math.random() * COLS);
-                if (!grid[rr][cc].isMine) {
-                    grid[rr][cc].isMine = true;
-                    minesPlaced++;
-                }
+                if (!grid[rr][cc].isMine) { grid[rr][cc].isMine = true; minesPlaced++; }
             }
 
-            // Tính số mìn xung quanh
             for (var r = 0; r < ROWS; r++) {
                 for (var c = 0; c < COLS; c++) {
-                    if (!grid[r][c].isMine) {
-                        grid[r][c].count = countMines(r, c);
-                    }
+                    if (!grid[r][c].isMine) grid[r][c].count = countMines(r, c);
                 }
             }
         }
@@ -281,96 +191,52 @@
             for (var i = -1; i <= 1; i++) {
                 for (var j = -1; j <= 1; j++) {
                     var nr = r + i, nc = c + j;
-                    if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
-                        if (grid[nr][nc].isMine) count++;
-                    }
+                    if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && grid[nr][nc].isMine) count++;
                 }
             }
             return count;
         }
 
         function setMode(mode) {
-            if (mode === 'dig') {
-                isFlagMode = false;
-                document.getElementById('digBtn').className = 'active-mode';
-                document.getElementById('flagBtn').className = '';
-            } else if (mode === 'flag') {
-                isFlagMode = true;
-                document.getElementById('digBtn').className = '';
-                document.getElementById('flagBtn').className = 'active-mode';
-            }
+            if (mode === 'dig') { isFlagMode = false; document.getElementById('digBtn').className = 'active-mode'; document.getElementById('flagBtn').className = ''; }
+            else { isFlagMode = true; document.getElementById('digBtn').className = ''; document.getElementById('flagBtn').className = 'active-mode'; }
         }
 
         function handleClick(cell) {
             if (gameOver || (cell.isOpen && !isFlagMode)) return;
-
             if (isFlagMode) {
-                // Chế độ cắm cờ
-                if (!cell.isOpen) {
-                    cell.isFlag = !cell.isFlag;
-                    cell.div.innerText = cell.isFlag ? "F" : "";
-                    cell.div.className = cell.isFlag ? "cell flag" : "cell";
-                }
+                if (!cell.isOpen) { cell.isFlag = !cell.isFlag; cell.div.innerText = cell.isFlag ? "F" : ""; cell.div.className = cell.isFlag ? "cell flag" : "cell"; }
             } else {
-                // Chế độ mở ô
-                if (cell.isFlag) return; // Không mở ô có cờ
-                
-                if (cell.isMine) {
-                    revealMines();
-                    document.getElementById("status").innerText = "GAME OVER!";
-                    gameOver = true;
-                } else {
-                    openCell(cell);
-                    checkWin();
-                }
+                if (cell.isFlag) return;
+                if (cell.isMine) { revealMines(); document.getElementById("status").innerText = "GAME OVER!"; gameOver = true; }
+                else { openCell(cell); checkWin(); }
             }
         }
 
         function openCell(cell) {
             if (cell.isOpen || cell.isFlag) return;
-            cell.isOpen = true;
-            cell.div.className = "cell revealed";
-            
-            if (cell.count > 0) {
-                cell.div.innerText = cell.count;
-            } else {
-                // Nếu là ô trống (0), mở loang ra
+            cell.isOpen = true; cell.div.className = "cell revealed";
+            if (cell.count > 0) cell.div.innerText = cell.count;
+            else {
                 for (var i = -1; i <= 1; i++) {
                     for (var j = -1; j <= 1; j++) {
                         var nr = cell.r + i, nc = cell.c + j;
-                        if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
-                            openCell(grid[nr][nc]);
-                        }
+                        if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) openCell(grid[nr][nc]);
                     }
                 }
             }
         }
 
         function revealMines() {
-            for (var r = 0; r < ROWS; r++) {
-                for (var c = 0; c < COLS; c++) {
-                    if (grid[r][c].isMine) {
-                        grid[r][c].div.className = "cell bomb";
-                        grid[r][c].div.innerText = "X";
-                    }
-                }
-            }
+            for (var r = 0; r < ROWS; r++) { for (var c = 0; c < COLS; c++) { if (grid[r][c].isMine) { grid[r][c].div.className = "cell bomb"; grid[r][c].div.innerText = "X"; } } }
         }
 
         function checkWin() {
-            var openedCount = 0;
-            for (var r = 0; r < ROWS; r++) {
-                for (var c = 0; c < COLS; c++) {
-                    if (grid[r][c].isOpen) openedCount++;
-                }
-            }
-            if (openedCount === (ROWS * COLS - MINES)) {
-                document.getElementById("status").innerText = "YOU WIN!";
-                gameOver = true;
-            }
+            var opened = 0;
+            for (var r = 0; r < ROWS; r++) { for (var c = 0; c < COLS; c++) { if (grid[r][c].isOpen) opened++; } }
+            if (opened === (ROWS * COLS - MINES)) { document.getElementById("status").innerText = "YOU WIN!"; gameOver = true; }
         }
 
-        // Bắt đầu game khi tải trang
         initGame();
     </script>
 </body>

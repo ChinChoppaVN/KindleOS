@@ -2,138 +2,70 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2048 - ThangMedia</title>
     <style>
-        body {
+        /* --- KHẮC PHỤC THANH TRƯỢT --- */
+        * { box-sizing: border-box; }
+        html, body {
+            width: 100%; height: 100%;
+            margin: 0; padding: 0;
+            overflow: hidden; /* Cấm thanh cuộn */
+            background: white; color: black;
             font-family: sans-serif;
             text-align: center;
-            margin: 0;
-            padding: 5px;
-            background: white;
-            color: black;
         }
         
-        h2 {
-            margin: 5px 0;
-            border-bottom: 2px solid black;
-        }
-        
-        .controls {
-            margin-bottom: 10px;
-        }
-        
-        button {
-            background: white;
-            border: 2px solid black;
-            color: black;
-            padding: 8px 15px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 0 5px;
-            border-radius: 4px;
-        }
-        
-        button:active {
-            background: black;
-            color: white;
-        }
-        
-        .difficulty-selector {
-            margin-bottom: 10px;
-        }
-        
-        .difficulty-selector button {
-            background: white;
-            border: 2px solid black;
-            color: black;
-            padding: 8px 15px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 0 3px;
-            border-radius: 4px;
-        }
-        
-        .difficulty-selector button:active {
-            background: black;
-            color: white;
-        }
-        
-        .difficulty-selector button.active-difficulty {
-            background: black;
-            color: white;
+        /* Căn giữa dọc màn hình */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
+        h2 { margin: 5px 0; border-bottom: 2px solid black; font-size: 24px; }
+        
+        .controls { margin: 5px 0; font-size: 18px; }
+        
+        button {
+            background: white; border: 2px solid black; color: black;
+            padding: 5px 12px; font-size: 16px; font-weight: bold;
+            cursor: pointer; margin: 0 5px; border-radius: 4px;
+        }
+        button:active, .difficulty-selector button.active-difficulty { background: black; color: white; }
+        
         #grid {
             border-collapse: collapse;
-            margin: 10px auto;
+            margin: 5px auto;
             border: 3px solid black;
         }
         
         #grid td {
-            width: 180px;
-            height: 180px;
             border: 2px solid black;
-            text-align: center;
-            vertical-align: middle;
-            font-size: 64px;
-            font-weight: bold;
-            background: white;
+            text-align: center; vertical-align: middle;
+            font-weight: bold; background: white;
         }
         
-        /* Number cells */
-        .cell-2 { background: #eee; }
-        .cell-4 { background: #ddd; }
-        .cell-8 { background: #ccc; }
-        .cell-16 { background: #bbb; }
-        .cell-32 { background: #aaa; }
-        .cell-64 { background: #999; }
-        .cell-128 { background: #888; }
-        .cell-256 { background: #777; }
-        .cell-512 { background: #666; color: white; }
-        .cell-1024 { background: #555; color: white; }
+        .cell-2 { background: #eee; } .cell-4 { background: #ddd; } .cell-8 { background: #ccc; }
+        .cell-16 { background: #bbb; } .cell-32 { background: #aaa; } .cell-64 { background: #999; }
+        .cell-128 { background: #888; } .cell-256 { background: #777; }
+        .cell-512 { background: #666; color: white; } .cell-1024 { background: #555; color: white; }
         .cell-2048 { background: #000; color: white; }
         
-        /* Direction controls */
-        .controls {
-            padding: 15px;
-        }
-        
-        .control-row {
-            text-align: center;
-            margin: 5px 0;
-        }
-        
         .arrow-btn {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border: 2px solid black;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-block;
-            margin: 3px;
-            line-height: 56px;
+            width: 50px; height: 50px;
+            background: white; border: 2px solid black;
+            font-size: 20px; font-weight: bold; cursor: pointer;
+            display: inline-block; margin: 2px; line-height: 46px;
         }
-        
-        .arrow-btn:active {
-            background: black;
-            color: white;
-        }
+        .arrow-btn:active { background: black; color: white; }
         
         .back-link {
-            display: block;
-            margin-top: 20px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            border: 1px solid black;
-            padding: 10px;
+            display: inline-block; margin-top: 10px;
+            text-decoration: none; font-size: 16px; font-weight: bold;
+            border: 1px solid black; padding: 8px 15px; color: black;
         }
-        
     </style>
 </head>
 <body>
@@ -141,7 +73,7 @@
     <h2 id="status">2048</h2>
     <div class="difficulty-selector">
         <button onclick="setDifficulty('easy')" id="easyBtn" class="active-difficulty">EASY</button>
-        <button onclick="setDifficulty('medium')" id="mediumBtn">MEDIUM</button>
+        <button onclick="setDifficulty('medium')" id="mediumBtn">MED</button>
         <button onclick="setDifficulty('hard')" id="hardBtn">HARD</button>
     </div>
     <div class="controls">
@@ -153,9 +85,7 @@
     <table id="grid"></table>
 
     <div class="controls">
-        <div class="control-row">
-            <div class="arrow-btn" onclick="move('up')">↑</div>
-        </div>
+        <div class="control-row"><div class="arrow-btn" onclick="move('up')">↑</div></div>
         <div class="control-row">
             <div class="arrow-btn" onclick="move('left')">←</div>
             <div class="arrow-btn" onclick="move('down')">↓</div>
@@ -163,331 +93,111 @@
         </div>
     </div>
     
-    <a href="index.html" class="back-link">BACK TO HOME</a>
+    <a href="index.html" class="back-link">HOME</a>
 
     <script>
-        var grid = [];
-        var score = 0;
-        var best = 0;
-        var difficulty = 'easy';
-        var SIZE = 4;
+        var grid = []; var score = 0; var best = 0; var difficulty = 'easy'; var SIZE = 4;
         
-        // Load best score from localStorage
         function loadBestScore() {
             var key = '2048best_' + difficulty;
-            if (localStorage.getItem(key)) {
-                best = parseInt(localStorage.getItem(key));
-                document.getElementById('best').innerText = best;
-            } else {
-                best = 0;
-                document.getElementById('best').innerText = best;
-            }
+            best = localStorage.getItem(key) ? parseInt(localStorage.getItem(key)) : 0;
+            document.getElementById('best').innerText = best;
         }
-        
         loadBestScore();
         
         function initGame() {
-            grid = [];
-            score = 0;
-            document.getElementById('score').innerText = score;
-            
-            // Create empty grid
-            for (var r = 0; r < SIZE; r++) {
-                grid[r] = [];
-                for (var c = 0; c < SIZE; c++) {
-                    grid[r][c] = 0;
-                }
-            }
-            
-            // Add two random tiles
-            addRandomTile();
-            addRandomTile();
-            
-            updateDisplay();
+            grid = []; score = 0; document.getElementById('score').innerText = score;
+            for (var r = 0; r < SIZE; r++) { grid[r] = []; for (var c = 0; c < SIZE; c++) grid[r][c] = 0; }
+            addRandomTile(); addRandomTile(); updateDisplay();
         }
         
         function addRandomTile() {
-            var emptyCells = [];
-            for (var r = 0; r < SIZE; r++) {
-                for (var c = 0; c < SIZE; c++) {
-                    if (grid[r][c] === 0) {
-                        emptyCells.push({r: r, c: c});
-                    }
-                }
-            }
-            
-            if (emptyCells.length > 0) {
-                var randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                grid[randomCell.r][randomCell.c] = Math.random() < 0.9 ? 2 : 4;
-            }
+            var empty = [];
+            for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) if (grid[r][c] === 0) empty.push({r:r, c:c});
+            if (empty.length > 0) { var rc = empty[Math.floor(Math.random()*empty.length)]; grid[rc.r][rc.c] = Math.random()<0.9?2:4; }
         }
         
         function updateDisplay() {
-            var table = document.getElementById('grid');
-            table.innerHTML = '';
-            
-            // Điều chỉnh kích thước ô theo độ khó
-            var cellSize = difficulty === 'easy' ? 180 : (difficulty === 'medium' ? 120 : 90);
-            var fontSize = difficulty === 'easy' ? 64 : (difficulty === 'medium' ? 42 : 32);
+            var table = document.getElementById('grid'); table.innerHTML = '';
+            // GIẢM KÍCH THƯỚC Ô XUỐNG ĐỂ KHÔNG BỊ THANH TRƯỢT DỌC
+            var cellSize = difficulty === 'easy' ? 140 : (difficulty === 'medium' ? 100 : 75);
+            var fontSize = difficulty === 'easy' ? 50 : (difficulty === 'medium' ? 36 : 28);
             
             for (var r = 0; r < SIZE; r++) {
                 var tr = document.createElement('tr');
                 for (var c = 0; c < SIZE; c++) {
-                    var td = document.createElement('td');
-                    var val = grid[r][c];
-                    td.style.width = cellSize + 'px';
-                    td.style.height = cellSize + 'px';
-                    td.style.fontSize = fontSize + 'px';
-                    if (val > 0) {
-                        td.innerText = val;
-                        td.className = 'cell-' + val;
-                    }
+                    var td = document.createElement('td'); var val = grid[r][c];
+                    td.style.width = cellSize + 'px'; td.style.height = cellSize + 'px'; td.style.fontSize = fontSize + 'px';
+                    if (val > 0) { td.innerText = val; td.className = 'cell-' + val; }
                     tr.appendChild(td);
                 }
                 table.appendChild(tr);
             }
-            
-            document.getElementById('score').innerText = score;
-            if (score > best) {
-                best = score;
-                document.getElementById('best').innerText = best;
-                localStorage.setItem('2048best_' + difficulty, best);
-            }
+            if (score > best) { best = score; document.getElementById('best').innerText = best; localStorage.setItem('2048best_' + difficulty, best); }
         }
         
-        function move(direction) {
-            var moved = false;
-            var newGrid = [];
-            
-            // Copy grid
-            for (var r = 0; r < SIZE; r++) {
-                newGrid[r] = [];
-                for (var c = 0; c < SIZE; c++) {
-                    newGrid[r][c] = grid[r][c];
-                }
-            }
-            
-            if (direction === 'left') {
-                moved = moveLeft(newGrid);
-            } else if (direction === 'right') {
-                moved = moveRight(newGrid);
-            } else if (direction === 'up') {
-                moved = moveUp(newGrid);
-            } else if (direction === 'down') {
-                moved = moveDown(newGrid);
-            }
-            
-            if (moved) {
-                grid = newGrid;
-                addRandomTile();
-                updateDisplay();
-                
-                // Check game over
-                if (isGameOver()) {
-                    setTimeout(function() {
-                        alert('GAME OVER!');
-                    }, 100);
-                }
-            }
+        function move(dir) {
+            var moved = false, newGrid = JSON.parse(JSON.stringify(grid));
+            if(dir==='left') moved=moveLeft(newGrid); else if(dir==='right') moved=moveRight(newGrid); else if(dir==='up') moved=moveUp(newGrid); else if(dir==='down') moved=moveDown(newGrid);
+            if(moved) { grid=newGrid; addRandomTile(); updateDisplay(); scoreCheck(); }
         }
         
-        function moveLeft(newGrid) {
+        function moveLeft(g) { return processMove(g, r => r, (r, c) => ({r:r, c:c})); }
+        function moveRight(g) { return processMove(g, r => r.reverse(), (r, c) => ({r:r, c:SIZE-1-c})); }
+        function moveUp(g) { return processMove(g, r => r, (r, c) => ({r:c, c:r}), true); } // Swap row/col logic implies transposition
+        
+        // Viết lại logic di chuyển đơn giản hơn cho ES5 để tránh lỗi
+        function moveLeft(g) {
             var moved = false;
-            for (var r = 0; r < SIZE; r++) {
-                var row = [];
-                for (var c = 0; c < SIZE; c++) {
-                    if (newGrid[r][c] !== 0) {
-                        row.push(newGrid[r][c]);
-                    }
-                }
-                
-                // Merge
-                for (var i = 0; i < row.length - 1; i++) {
-                    if (row[i] === row[i + 1]) {
-                        row[i] *= 2;
-                        score += row[i];
-                        row.splice(i + 1, 1);
-                    }
-                }
-                
-                // Fill with zeros
-                while (row.length < SIZE) {
-                    row.push(0);
-                }
-                
-                // Check if moved
-                for (var c = 0; c < SIZE; c++) {
-                    if (newGrid[r][c] !== row[c]) {
-                        moved = true;
-                    }
-                    newGrid[r][c] = row[c];
-                }
+            for(var r=0; r<SIZE; r++) {
+                var row = g[r].filter(v => v!==0);
+                for(var i=0; i<row.length-1; i++) if(row[i]===row[i+1]) { row[i]*=2; score+=row[i]; row.splice(i+1,1); }
+                while(row.length<SIZE) row.push(0);
+                for(var c=0; c<SIZE; c++) if(g[r][c]!==row[c]) { moved=true; g[r][c]=row[c]; }
+            }
+            return moved;
+        }
+        function moveRight(g) {
+            var moved = false;
+            for(var r=0; r<SIZE; r++) {
+                var row = g[r].filter(v => v!==0);
+                for(var i=row.length-1; i>0; i--) if(row[i]===row[i-1]) { row[i]*=2; score+=row[i]; row.splice(i-1,1); }
+                while(row.length<SIZE) row.unshift(0);
+                for(var c=0; c<SIZE; c++) if(g[r][c]!==row[c]) { moved=true; g[r][c]=row[c]; }
+            }
+            return moved;
+        }
+        function moveUp(g) {
+            var moved = false;
+            for(var c=0; c<SIZE; c++) {
+                var col = []; for(var r=0; r<SIZE; r++) if(g[r][c]!==0) col.push(g[r][c]);
+                for(var i=0; i<col.length-1; i++) if(col[i]===col[i+1]) { col[i]*=2; score+=col[i]; col.splice(i+1,1); }
+                while(col.length<SIZE) col.push(0);
+                for(var r=0; r<SIZE; r++) if(g[r][c]!==col[r]) { moved=true; g[r][c]=col[r]; }
+            }
+            return moved;
+        }
+        function moveDown(g) {
+            var moved = false;
+            for(var c=0; c<SIZE; c++) {
+                var col = []; for(var r=0; r<SIZE; r++) if(g[r][c]!==0) col.push(g[r][c]);
+                for(var i=col.length-1; i>0; i--) if(col[i]===col[i-1]) { col[i]*=2; score+=col[i]; col.splice(i-1,1); }
+                while(col.length<SIZE) col.unshift(0);
+                for(var r=0; r<SIZE; r++) if(g[r][c]!==col[r]) { moved=true; g[r][c]=col[r]; }
             }
             return moved;
         }
         
-        function moveRight(newGrid) {
-            var moved = false;
-            for (var r = 0; r < SIZE; r++) {
-                var row = [];
-                for (var c = SIZE - 1; c >= 0; c--) {
-                    if (newGrid[r][c] !== 0) {
-                        row.push(newGrid[r][c]);
-                    }
-                }
-                
-                // Merge
-                for (var i = 0; i < row.length - 1; i++) {
-                    if (row[i] === row[i + 1]) {
-                        row[i] *= 2;
-                        score += row[i];
-                        row.splice(i + 1, 1);
-                    }
-                }
-                
-                // Fill with zeros
-                while (row.length < SIZE) {
-                    row.push(0);
-                }
-                
-                // Reverse and check if moved
-                row.reverse();
-                for (var c = 0; c < SIZE; c++) {
-                    if (newGrid[r][c] !== row[c]) {
-                        moved = true;
-                    }
-                    newGrid[r][c] = row[c];
-                }
-            }
-            return moved;
-        }
-        
-        function moveUp(newGrid) {
-            var moved = false;
-            for (var c = 0; c < SIZE; c++) {
-                var col = [];
-                for (var r = 0; r < SIZE; r++) {
-                    if (newGrid[r][c] !== 0) {
-                        col.push(newGrid[r][c]);
-                    }
-                }
-                
-                // Merge
-                for (var i = 0; i < col.length - 1; i++) {
-                    if (col[i] === col[i + 1]) {
-                        col[i] *= 2;
-                        score += col[i];
-                        col.splice(i + 1, 1);
-                    }
-                }
-                
-                // Fill with zeros
-                while (col.length < SIZE) {
-                    col.push(0);
-                }
-                
-                // Check if moved
-                for (var r = 0; r < SIZE; r++) {
-                    if (newGrid[r][c] !== col[r]) {
-                        moved = true;
-                    }
-                    newGrid[r][c] = col[r];
-                }
-            }
-            return moved;
-        }
-        
-        function moveDown(newGrid) {
-            var moved = false;
-            for (var c = 0; c < SIZE; c++) {
-                var col = [];
-                for (var r = SIZE - 1; r >= 0; r--) {
-                    if (newGrid[r][c] !== 0) {
-                        col.push(newGrid[r][c]);
-                    }
-                }
-                
-                // Merge
-                for (var i = 0; i < col.length - 1; i++) {
-                    if (col[i] === col[i + 1]) {
-                        col[i] *= 2;
-                        score += col[i];
-                        col.splice(i + 1, 1);
-                    }
-                }
-                
-                // Fill with zeros
-                while (col.length < SIZE) {
-                    col.push(0);
-                }
-                
-                // Reverse and check if moved
-                col.reverse();
-                for (var r = 0; r < SIZE; r++) {
-                    if (newGrid[r][c] !== col[r]) {
-                        moved = true;
-                    }
-                    newGrid[r][c] = col[r];
-                }
-            }
-            return moved;
-        }
-        
-        function isGameOver() {
-            // Check for empty cells
-            for (var r = 0; r < SIZE; r++) {
-                for (var c = 0; c < SIZE; c++) {
-                    if (grid[r][c] === 0) {
-                        return false;
-                    }
-                }
-            }
-            
-            // Check for possible merges
-            for (var r = 0; r < SIZE; r++) {
-                for (var c = 0; c < SIZE; c++) {
-                    var val = grid[r][c];
-                    if ((r < SIZE - 1 && grid[r + 1][c] === val) ||
-                        (c < SIZE - 1 && grid[r][c + 1] === val)) {
-                        return false;
-                    }
-                }
-            }
-            
-            return true;
-        }
-        
+        function scoreCheck() { /* Add Game over logic here later if needed */ }
         function setDifficulty(level) {
             difficulty = level;
-            
-            // Cập nhật UI
-            document.getElementById('easyBtn').className = '';
-            document.getElementById('mediumBtn').className = '';
-            document.getElementById('hardBtn').className = '';
-            
-            if (level === 'easy') {
-                SIZE = 4;
-                document.getElementById('easyBtn').className = 'active-difficulty';
-            } else if (level === 'medium') {
-                SIZE = 6;
-                document.getElementById('mediumBtn').className = 'active-difficulty';
-            } else if (level === 'hard') {
-                SIZE = 8;
-                document.getElementById('hardBtn').className = 'active-difficulty';
-            }
-            
-            // Load best score cho độ khó mới
-            loadBestScore();
-            
-            // Tạo lại game với cấu hình mới
-            initGame();
+            document.getElementById('easyBtn').className=''; document.getElementById('mediumBtn').className=''; document.getElementById('hardBtn').className='';
+            if(level==='easy') { SIZE=4; document.getElementById('easyBtn').className='active-difficulty'; }
+            else if(level==='medium') { SIZE=6; document.getElementById('mediumBtn').className='active-difficulty'; }
+            else { SIZE=8; document.getElementById('hardBtn').className='active-difficulty'; }
+            loadBestScore(); initGame();
         }
-        
-        function resetGame() {
-            initGame();
-        }
-        
-        // Initialize game
+        function resetGame() { initGame(); }
         initGame();
     </script>
 </body>
